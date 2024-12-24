@@ -21,20 +21,21 @@ async def add_user(
 
 
 @app.put('/user/{user_id}/{username}/{age}')
-async def update_users(user_id: str,
-                       username: Annotated[str, Path(min_length=5, max_length=20, description='Enter username', example='UrbanUser')],
+async def update_users(user_id: Annotated[int, Path(ge=1, le=100, description='Enter user ID', example=5)],
+                       username: Annotated[
+                           str, Path(min_length=5, max_length=20, description='Enter username', example='UrbanUser')],
                        age: Annotated[int, Path(ge=18, le=120, description='Enter age', example='24')]) -> str:
-    if user_id in users:
-        users[user_id] = f'Имя: {username}, возраст: {age}'
+    if str(user_id) in users:
+        users[str(user_id)] = f'Имя: {username}, возраст: {age}'
         return f'The user {user_id} is updated'
     else:
         return f'User {user_id} not found'
 
 
 @app.delete('/user/{user_id}')
-async def delete_user(user_id: str) -> str:
-    if user_id in users:
-        users.pop(user_id)
+async def delete_user(user_id: Annotated[int, Path(ge=1, le=100, description='Enter user ID', example=5)]) -> str:
+    if str(user_id) in users:
+        users.pop(str(user_id))
         return f'User {user_id} has been deleted'
     else:
         return f'User {user_id} not found'
